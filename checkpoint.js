@@ -8,6 +8,7 @@
 // Pero todos los métodos ya implementados en las homeowrks no es 
 // necesario que los vuelvan a definir.
 
+const { type } = require('mocha/lib/utils');
 const {
     Queue,
     LinkedList,
@@ -19,7 +20,7 @@ const {
 
 // EJERCICIO 1
 // Implementar la funcion 'exponencial' que recibe un parametro entero 'exp'
-// y retorna una una funcion, nos referiremos a esta ultima como funcion hija,
+// y retorna una funcion, nos referiremos a esta ultima como funcion hija,
 // y a 'exponencial' como la funcion padre, la funcion hija debe de recibir 
 // un parametro y retornar dicho parametro elevado al parametro 'exp' de 
 // la funcion padre original 'exponencial'
@@ -33,7 +34,9 @@ const {
 // < 16
 
 function exponencial(exp) {
-
+    return (num) => {
+        return Math.pow(num,exp)
+    }
 }
 
 // ----- Recursión -----
@@ -70,8 +73,24 @@ function exponencial(exp) {
 // Aclaraciones: el segundo parametro que recibe la funcion ('direccion') puede ser pasado vacio (null)
 
 function direcciones(laberinto) {
-
+    let result = '';
+    let obj = laberinto;
+    (function lab(objectx = obj) {
+        console.log(objectx);
+        for (const property in objectx) {
+            if (objectx[property] === 'destino') {
+                result = result + property
+                break;
+            } 
+            if(typeof objectx[property] === 'object'){
+                result = result + property
+                lab(objectx[property])
+            } 
+        }
+    })();
+    return result
 }
+
 
 
 // EJERCICIO 3
@@ -88,7 +107,22 @@ function direcciones(laberinto) {
 // deepEqualArrays([0,1,[[0,1,2],1,2]], [0,1,[[0,1,2],1,2]]) => true
 
 function deepEqualArrays(arr1, arr2) {
-
+    if(arr1.length != arr2.length) {return false}
+    for (let i = 0; i < arr1.length; i++) {
+        if(Array.isArray(arr1[i]) && Array.isArray(arr2[i])){
+            let Narr1 = arr1.flat(arr1.length)
+            let Narr2 = arr2.flat(arr2.length)
+            console.log(Narr1);
+            console.log(Narr2);
+            return deepEqualArrays(Narr1 , Narr2)
+        }
+        if(arr1[i] != arr2[i]){
+            return false 
+        } 
+        if(typeof arr1[i] != typeof arr2[i]) return false 
+        // saber si el siguiente valor es un array para aplanarlo
+    }
+    return true 
 }
 
 
@@ -104,83 +138,79 @@ function deepEqualArrays(arr1, arr2) {
 // head --> 4 --> 3 --> 1 --> null
 // head --> 9 --> 3 --> -1 --> null
 // Las dos clases principales ya van a estar implementadas a continuacion:
-function OrderedLinkedList() {
-    this.head = null;
-}
-// notar que Node esta implementado en el archivo DS
-
-// Y el metodo print que permite visualizar la lista:
-OrderedLinkedList.prototype.print = function(){
-    let print = 'head'
-    let pointer = this.head
-    while (pointer) {
-        print += ' --> ' + pointer.value
-        pointer = pointer.next;
+class OrderedLinkedList {
+    constructor() {
+        this.head = null;
     }
-    print += ' --> null'
-    return print
+    // notar que Node esta implementado en el archivo DS
+    // Y el metodo print que permite visualizar la lista:
+    print() {
+        let print = 'head';
+        let pointer = this.head;
+        while (pointer) {
+            print += ' --> ' + pointer.value;
+            pointer = pointer.next;
+        }
+        print += ' --> null';
+        return print;
+    }
+    // EJERCICIO 4
+    // Crea el metodo 'add' que debe agregar nodos a la OLL de forma que la misma se conserve ordenada:
+    // Ejemplo:
+    // > LL.print()
+    // < 'head --> null'
+    // > LL.add(1)
+    // > LL.print()
+    // < 'head --> 1 --> null'
+    //    2       c
+    // > LL.add(5)
+    // > LL.print()
+    // < 'head --> 5 --> 1 --> null'
+    // > LL.add(4)
+    // > LL.print()
+    // < 'head --> 5 --> 3 --> 1 --> null'
+    //               4
+    add(val) {
+    }
+    // EJERCICIO 5
+    // Crea el metodo 'removeHigher' que deve devolver el valor mas alto de la linked list 
+    // removiendo su nodo corresponidente:
+    // Ejemplo:
+    // > LL.print()
+    // < 'head --> 5 --> 4 --> 1 --> null'
+    // > LL.removeHigher()
+    // < 5
+    // > LL.removeHigher()
+    // < 4
+    // > LL.removeHigher()
+    // < 1
+    // > LL.removeHigher()
+    // < null
+    removeHigher() {
+    }
+    // EJERCICIO 6
+    // Crea el metodo 'removeLower' que deve devolver el valor mas bajo de la linked list 
+    // removiendo su nodo corresponidente:
+    // Ejemplo:
+    // > LL.print()
+    // < 'head --> 5 --> 4 --> 1 --> null'
+    // > LL.removeHigher()
+    // < 1
+    // > LL.removeHigher()
+    // < 4
+    // > LL.removeHigher()
+    // < 5
+    // > LL.removeHigher()
+    // < null
+    removeLower() {
+    }
 }
 
 
-// EJERCICIO 4
-// Crea el metodo 'add' que debe agregar nodos a la OLL de forma que la misma se conserve ordenada:
-// Ejemplo:
-// > LL.print()
-// < 'head --> null'
-// > LL.add(1)
-// > LL.print()
-// < 'head --> 1 --> null'
-//    2       c
-// > LL.add(5)
-// > LL.print()
-// < 'head --> 5 --> 1 --> null'
-// > LL.add(4)
-// > LL.print()
-// < 'head --> 5 --> 3 --> 1 --> null'
-//               4
-OrderedLinkedList.prototype.add = function(val){
-    
-}
 
 
-// EJERCICIO 5
-// Crea el metodo 'removeHigher' que deve devolver el valor mas alto de la linked list 
-// removiendo su nodo corresponidente:
-// Ejemplo:
-// > LL.print()
-// < 'head --> 5 --> 4 --> 1 --> null'
-// > LL.removeHigher()
-// < 5
-// > LL.removeHigher()
-// < 4
-// > LL.removeHigher()
-// < 1
-// > LL.removeHigher()
-// < null
-
-OrderedLinkedList.prototype.removeHigher = function(){
-    
-}
 
 
-// EJERCICIO 6
-// Crea el metodo 'removeLower' que deve devolver el valor mas bajo de la linked list 
-// removiendo su nodo corresponidente:
-// Ejemplo:
-// > LL.print()
-// < 'head --> 5 --> 4 --> 1 --> null'
-// > LL.removeHigher()
-// < 1
-// > LL.removeHigher()
-// < 4
-// > LL.removeHigher()
-// < 5
-// > LL.removeHigher()
-// < null
-
-OrderedLinkedList.prototype.removeLower = function(){
-    
-}
 
 
 
